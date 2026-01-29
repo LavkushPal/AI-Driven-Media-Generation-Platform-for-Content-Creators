@@ -1,14 +1,42 @@
 import express from 'express'
 import 'dotenv/config'
 import {connectDB} from './config/db.js'
+import session from 'express-session'
+import MongoStore from 'connect-mongo'
+import auth_router from './routes/auth_routes.js'
+
 
 const app=express();
 await connectDB();
 
+//............middlewares.................
 
-app.get('/',(req,resp)=>{
-    resp.send("fine: server is running ");
-})
+app.use(cors({
+    origin: ['http://localhost:4000/','http://localhost:5173/'],
+    credentials:true
+}));
+
+app.use(session({
+    secret : process.env.SECRET_KEY,
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+        secure:false,
+        maxAge: 1000*60*60*24 //24 hr
+    },
+    store: MongoStore.create({
+        mongoUrl:process.env.MONGO_URL,
+        collectionName: 'session'
+    })
+}));
+
+app.use(express.json());
+
+
+//............api's.................
+
+app.use('/api/auth',auth_router); //authentication apis
+// server --> routes --> middlewares --> controllers --> models
 
 const port=process.env.PORT || 3000;
 app.listen(port,()=>console.log("server is running on :"+port));
