@@ -1,14 +1,13 @@
-import User from './models/user.js'
+import User from '../models/user.js'
 import bcrypt from 'bcrypt'
 
 
 //..........user registration.................
 export const register_user= async (req,resp)=>{
-    
     try{
         const {name,email,password}=req.body;
         const user=await User.findOne({email});
-        if(!user){
+        if(user){
             return resp.status(400).json({
                 message:'user already exists'
             })
@@ -18,12 +17,14 @@ export const register_user= async (req,resp)=>{
         const hashed_password= await bcrypt.hash(password,salt);
 
         const new_user=new User({
-            name,email,hashed_password
+            name,email,password:hashed_password
         })
+
+        console.log(new_user);
 
         await new_user.save();
 
-        req.session.isLoggedIn=true;
+        req.session.isLoggedIn=false;
         req.session.userId=new_user._id;
 
         return resp.json({
@@ -38,6 +39,7 @@ export const register_user= async (req,resp)=>{
     catch(error){
         console.log(error.message)
         return resp.status(500).json({
+            error:"user registration failed due to : ",
             message:error.message
         })
     }
@@ -51,7 +53,7 @@ export const login_user= async(req,resp)=>{
         const {email,password}=req.body;
         const user=await User.findOne({email});
 
-        if(!user){
+        if(user==null){
             return resp.status(400).json({
                 message:'email is not found'
             })
@@ -109,7 +111,7 @@ export const verify_user= async(req,resp)=>{
 
         if(!user) return resp.status(500).json({message:'invalid user'})
 
-        return res.json({user});
+        return resp.json({user});
         
     } catch (error) {
         console.log(error.message)

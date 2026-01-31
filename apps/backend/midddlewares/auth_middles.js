@@ -1,5 +1,5 @@
 
-export default protect=async (req,resp,next)=>{
+const protect=async (req,resp,next)=>{
 
     const {isLoggedIn,userId}=req.session;
 
@@ -9,5 +9,7 @@ export default protect=async (req,resp,next)=>{
 
     next();
 }
+
+export default protect;
 
 

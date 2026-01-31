@@ -4,7 +4,7 @@ import {connectDB} from './config/db.js'
 import session from 'express-session'
 import MongoStore from 'connect-mongo'
 import auth_router from './routes/auth_routes.js'
-
+import cors from 'cors'
 
 const app=express();
 await connectDB();
@@ -17,7 +17,7 @@ app.use(cors({
 }));
 
 app.use(session({
-    secret : process.env.SECRET_KEY,
+    secret : process.env.SESSION_KEY,
     resave: false,
     saveUninitialized: false,
     cookie: {
