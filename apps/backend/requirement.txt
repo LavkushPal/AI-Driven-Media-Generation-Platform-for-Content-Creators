@@ -7,3 +7,4 @@ express-session
 -D @types/express-session
 
 connect-mongo
+cors
