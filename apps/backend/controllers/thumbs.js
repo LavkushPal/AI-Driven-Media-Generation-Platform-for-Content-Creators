@@ -1,25 +1,31 @@
-import gemini_ai from "../config/ai";
-import Thumbs from "../models/thumbnail"
-import {GenerateContentConfig} from '@google/genai'
+import gemini_ai from "../config/ai.js";
+import Thumbs from "../models/thumbnail.js"
+// import {GenerateContentConfig} from '@google/genai'
 import path from 'path';
 import fs from 'fs'
 import {v2 as cloudinary} from 'cloudinary'
 
+import { getDummyGeminiImageResponse } from "./dummy_thumbnail.js";
+
 export const generate_thumbs=async (req,resp)=>{
     try {
-        const {userID}=req.session;
-        const {title, description, style, aspectRatio, colorScheme, textOverlay, imageUrl, userPrompt,isGenerating }=req.body;
+         console.log("starting of gen call ok")
+         
+        const userid=req.session.userId;
+
+        const {title, description, style, aspectRatio, colorScheme, textOverlay, userPrompt}=req.body;
 
         const thumbnail= await Thumbs.create({
-            title, description, style,
-            aspectRatio, colorScheme, textOverlay,
-            imageUrl, userPrompt,isGenerating 
+            userID:userid ,title, description, style,
+            aspectRatio, colorScheme, textOverlay, userPrompt
         });
+
+        console.log("upto db call ok")
 
         // image generation work...............................................
         const gemini_model='gemini-3-pro-image-preview';
 
-        const generateConfig: GenerateContentConfig ={
+        const generateConfig={
             maxOutputTokens:32768,
             temperature:1,
             topP:0.95,
@@ -39,11 +45,19 @@ export const generate_thumbs=async (req,resp)=>{
         and impossible to ignore. `;
 
         //..............LLM Call........................................
-        const response= await gemini_ai.generateContent({
-            gemini_model,
-            contents:[prompt],
-            config:generateConfig
-        })
+
+        // const response = await gemini_ai.models.generateContent({
+        //     model:gemini_model,
+        //     contents:[prompt],
+        //     config:generateConfig
+        // })
+
+
+
+        //..........dummy image to test other function while api does not work
+        const response = getDummyGeminiImageResponse();
+
+        console.log("upto llm call ok")
 
 
         // Check if the response is valid
@@ -73,13 +87,13 @@ export const generate_thumbs=async (req,resp)=>{
             resource_type: "image"
         });
 
-        thumbnail.image_url = uploadResult.url;
+        thumbnail.imageUrl = uploadResult.url;
         thumbnail.isGenerating = false;
         await thumbnail.save();
 
         resp.json({
             message: "Thumbnail Generated",
-            thumbnail
+            thumbnail:thumbnail
         });
 
         // remove image file from disk
@@ -88,5 +102,26 @@ export const generate_thumbs=async (req,resp)=>{
     } catch (error) {
         console.log(error.message)
         resp.status(500).json({message: error.message});
+    }
+}
+
+
+export const delete_thumbs=async (req,resp)=>{
+
+    try {
+        const {id}= req.params;
+        const {userID}=req.session;
+
+        await Thumbs.findByIdAndDelete({_id: id,userID});
+
+        resp.json({
+            'message':" thumbnail is deleted "
+        })
+
+    } catch (error) {
+        console.log(error.message)
+        resp.status(500).json({
+            'message': error.message
+        })
     }
 }

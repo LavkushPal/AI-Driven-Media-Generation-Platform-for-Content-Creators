@@ -24,7 +24,7 @@ export const register_user= async (req,resp)=>{
 
         await new_user.save();
 
-        req.session.isLoggedIn=false;
+        req.session.isLoggedIn=true;
         req.session.userId=new_user._id;
 
         return resp.json({

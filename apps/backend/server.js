@@ -5,6 +5,7 @@ import session from 'express-session'
 import MongoStore from 'connect-mongo'
 import auth_router from './routes/auth_routes.js'
 import cors from 'cors'
+import thumbnail_router from './routes/thumbnail_routes.js'
 
 const app=express();
 await connectDB();
@@ -37,6 +38,13 @@ app.use(express.json());
 
 app.use('/api/auth',auth_router); //authentication apis
 // server --> routes --> middlewares --> controllers --> models
+
+
+app.use('/api/thumbnail',thumbnail_router);  //thumbnail apis
+// server --> routes --> controllers --> models
+
+
+
 
 const port=process.env.PORT || 3000;
 app.listen(port,()=>console.log("server is running on :"+port));

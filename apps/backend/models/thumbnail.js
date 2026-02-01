@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 const schema_thumbs= new mongoose.Schema({
-    userID:{type:String, ref:'User',required:treu},
+    userID:{type:String,required:true},
     title:{type:String, required:true, trim:true},
     description:{type:String, trim:true},
     style:{type:String},
@@ -13,6 +13,6 @@ const schema_thumbs= new mongoose.Schema({
     isGenerating:{type:Boolean, default:true}
 })
 
-const Thumbs=mongoose.model.Thumbs || mongoose.model("thumbnails",schema_thumbs)
+const Thumbs=mongoose.models.Thumbs || mongoose.model("thumbnails",schema_thumbs)
 
 export default Thumbs;
