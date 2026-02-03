@@ -4,6 +4,7 @@ import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import "./globals.css";
 import LenisScroll from "./components/LenisScroll";
+import {Toaster} from 'react-hot-toast'
 
 import Generate from "./pages/Generate";
 import MyGeneration from "./pages/MyGeneration";
@@ -12,6 +13,7 @@ import Login from "./pages/Login";
 export default function App() {
     return (
         <>
+            <Toaster/>
             <LenisScroll />
             <Navbar />
             <Routes>

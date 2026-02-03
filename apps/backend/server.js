@@ -13,7 +13,7 @@ await connectDB();
 //............middlewares.................
 
 app.use(cors({
-    origin: ['http://localhost:4000/','http://localhost:5173/'],
+    origin: ['http://localhost:4000','http://localhost:5173'],
     credentials:true
 }));
 
@@ -44,7 +44,9 @@ app.use('/api/thumbnail',thumbnail_router);  //thumbnail apis
 // server --> routes --> controllers --> models
 
 
-
+app.get('/',(req,resp)=>{
+    resp.send("server is running")
+})
 
 const port=process.env.PORT || 3000;
 app.listen(port,()=>console.log("server is running on :"+port));

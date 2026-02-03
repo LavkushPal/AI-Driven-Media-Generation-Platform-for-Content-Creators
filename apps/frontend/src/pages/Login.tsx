@@ -1,8 +1,13 @@
-import React from 'react'
-import SoftBackdrop from '../components/SoftBackdrop'
-
+import React, { useEffect } from 'react'
+import SoftBackdrop from '../components/SoftBackdrop';
+import {useAuthContext} from '../context/AuthContext.jsx';
+import { useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
+ 
 export default function Login() {
   const [state, setState] = React.useState("login")
+  const {user,login,signup} =useAuthContext();
+  const navigate= useNavigate()
 
     const [formData, setFormData] = React.useState({
         name: '',
@@ -17,8 +22,22 @@ export default function Login() {
 
     const handleSubmit = (e:React.FormEvent) => {
         e.preventDefault()
+        console.log("form submission triggered")
 
+        
+
+        if(state === "login"){
+            login(formData.email,formData.password)
+           // toast.success('login form submission triggered')
+        }
+            
+        else 
+            signup(formData.name,formData.email,formData.password)
     }
+
+    useEffect(()=>{
+        if(user) navigate('/')
+    },[user]);
 
     return (
         <>

@@ -9,7 +9,7 @@ import { getDummyGeminiImageResponse } from "./dummy_thumbnail.js";
 
 export const generate_thumbs=async (req,resp)=>{
     try {
-         console.log("starting of gen call ok")
+        console.log("starting of gen call ok")
          
         const userid=req.session.userId;
 
