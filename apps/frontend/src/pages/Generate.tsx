@@ -1,5 +1,10 @@
 import React, { useMemo, useRef, useState } from "react";
 
+import {useAuthContext} from '../context/AuthContext.jsx'
+import toast from "react-hot-toast";
+import api from '../config/api.jsx'
+import { useNavigate } from "react-router-dom";
+
 type AspectRatio = "16:9" | "1:1" | "9:16";
 type ThumbnailStyle = "Minimalist" | "Bold" | "Modern" | "Neon" | "Cinematic";
 type ModelTier = "Premium" | "Standard";
@@ -41,6 +46,10 @@ export default function Generate() {
   const [model, setModel] = useState<ModelTier>("Premium");
   const [additionalPrompts, setAdditionalPrompts] = useState("");
   const [photoUrl, setPhotoUrl] = useState<string | null>(null);
+  const [isLoading,setIsLoading] = useState(false)
+
+  const {isLoggedIn} = useAuthContext()
+  const navigate= useNavigate()
 
   const fileRef = useRef<HTMLInputElement | null>(null);
 
@@ -64,17 +73,68 @@ export default function Generate() {
     });
   }
 
-  function onGenerate() {
+    async function downloadThumbnail() {
+        if (!photoUrl) {
+          toast.error("No thumbnail to download");
+          return;
+        }
+
+        try {
+          const response = await fetch(photoUrl, { mode: "cors" });
+          const blob = await response.blob();
+
+          const blobUrl = URL.createObjectURL(blob);
+
+          const a = document.createElement("a");
+          a.href = blobUrl;
+
+          const safeTitle = (title || "thumbnail")
+            .replace(/[^\w\-]+/g, "_")
+            .slice(0, 60);
+
+          a.download = `${safeTitle}_${aspectRatio}.png`;
+
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+
+          URL.revokeObjectURL(blobUrl);
+          toast.success("Downloaded successfully");
+        } catch (err) {
+          console.error(err);
+          toast.error("Download failed (CORS restriction)");
+        }
+      }
+
+
+
+   async function onGenerate() {
+    if(!isLoggedIn) return toast.error('please login to generate thumbnail');
     // Frontend-only placeholder (hook this to your API later)
     const payload = {
       title,
       aspectRatio,
-      thumbStyle,
+      style: thumbStyle,
       colorScheme: schemeId,
-      model,
-      additionalPrompts,
-      hasPhoto: Boolean(photoUrl),
+      userPrompt: additionalPrompts,
+      description: ""
     };
+
+    setIsLoading(true);
+
+    const response = await api.post('/api/thumbnail/generate',payload);
+
+    if(response.data.thumbnail){
+      // navigate('/generate'+response.data.thumbnail._id);
+
+      setPhotoUrl(response.data.thumbnail.imageUrl);
+
+      toast.success(response.data.message)
+
+      setIsLoading(false);
+
+    }
+
     // eslint-disable-next-line no-console
     console.log("Generate thumbnail payload:", payload);
   }
@@ -332,9 +392,12 @@ export default function Generate() {
           <button
             type="button"
             onClick={onGenerate}
+            disabled={isLoading}
             className="mt-6 w-full rounded-2xl bg-gradient-to-r from-fuchsia-500 to-pink-500 px-5 py-4 text-sm font-semibold text-white shadow-lg shadow-fuchsia-500/20 hover:opacity-95 active:opacity-90"
           >
-            Generate Thumbnail
+
+          {isLoading?" Generating" : "Generate Thumbnail" }
+
           </button>
         </section>
 
@@ -369,9 +432,11 @@ export default function Generate() {
                 />
               ) : null}
 
+
+
               <div className="relative z-10 flex h-full w-full flex-col items-center justify-center px-6 text-center">
                 <div className="grid h-16 w-16 place-items-center rounded-full bg-white/10 ring-1 ring-white/15">
-                  <span className="text-2xl">🖼️</span>
+                  <span className="text-2xl"></span>
                 </div>
                 <p className="mt-4 text-sm font-medium text-white/85">
                   {title.trim() ? title.trim() : "Generate your first thumbnail"}
@@ -392,12 +457,28 @@ export default function Generate() {
                   </span>
                 </div>
               </div>
+            
             </div>
+
+
 
             {/* Small helper line under preview */}
             <div className="mt-3 text-xs text-white/45">
-              This is a UI-only preview. Connect your backend/image generator to render the real output.
+              Here is your mindo blowing thumbnail, download to use it 
             </div>
+
+            <button
+                type="button"
+                onClick={downloadThumbnail}
+                disabled={!photoUrl}
+                className={cn(
+                  "mt-4 w-full rounded-2xl bg-white/10 px-5 py-3 text-sm font-semibold ring-1 ring-white/10",
+                  photoUrl ? "hover:bg-white/15" : "opacity-40 cursor-not-allowed"
+                )}
+              >
+                Download Your Thumbnail
+              </button>
+
           </div>
         </section>
       </main>

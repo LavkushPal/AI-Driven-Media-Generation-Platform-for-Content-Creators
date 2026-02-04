@@ -22,8 +22,11 @@ app.use(session({
     resave: false,
     saveUninitialized: false,
     cookie: {
-        secure:false,
-        maxAge: 1000*60*60*24 //24 hr
+        maxAge: 1000*60*60*24 ,//24 hr
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'none',
+        path: '/',
     },
     store: MongoStore.create({
         mongoUrl:process.env.MONGO_URL,

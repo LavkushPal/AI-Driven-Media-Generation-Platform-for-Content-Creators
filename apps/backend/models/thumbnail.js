@@ -6,7 +6,7 @@ const schema_thumbs= new mongoose.Schema({
     description:{type:String, trim:true},
     style:{type:String},
     aspectRatio:{type:String, enum : ["16:9","1:1","9:16"]},
-    colorScheme:{type:String ,enum : ["forest","sunset","purple","neon"]},
+    colorScheme:{type:String ,enum : ["forest","sunset","purple","neon","blue-ice"]},
     textOverlay:{type:Boolean, default:false},
     imageUrl:{type:String, default:''},
     userPrompt:{type:String},
