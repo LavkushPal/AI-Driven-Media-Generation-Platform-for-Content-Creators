@@ -13,7 +13,7 @@ await connectDB();
 //............middlewares.................
 
 app.use(cors({
-    origin: ['http://localhost:4000','http://localhost:5173'],
+    origin: ['http://localhost:4000','http://localhost:5173','https://media-generation.vercel.app','https://media-gen-ai.vercel.app'],
     credentials:true
 }));
 
