@@ -18,8 +18,11 @@ export default function Navbar() {
                 viewport={{ once: true }}
                 transition={{ type: "spring", stiffness: 250, damping: 70, mass: 1 }}
             >
-                <a href="https://prebuiltui.com?utm_source=pixels">
-                    <img className="h-8.5 w-auto" src="/assets/logo.svg" alt="logo" width={130} height={34} />
+                <a href="/">
+                    <div> 
+                        <img className="h-8.5 w-auto hover:" src="/assets/logo2.svg" alt="AI-Driven Media Generator" width={130} height={34} />
+                    </div>
+                    
                 </a>
 
                 <div className="hidden md:flex items-center gap-8 transition duration-500">
@@ -31,7 +34,7 @@ export default function Navbar() {
                         :  <Link to={"#"} className="hover:text-pink-300 transition"> About </Link> 
                     }
                     
-                    <Link to={"#"} className="hover:text-pink-300 transition"> Contact </Link>
+                    <Link to={"/contact"} className="hover:text-pink-300 transition"> Contact </Link>
 
                 </div>
 

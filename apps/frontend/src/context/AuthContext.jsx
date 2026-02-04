@@ -86,7 +86,7 @@ export const AuthProvider= ({children})=>{
             
         } catch (error) {
             console.log(error.message)
-            toast.error(error.message)
+            // toast.error(error.message)
         }
     }
 

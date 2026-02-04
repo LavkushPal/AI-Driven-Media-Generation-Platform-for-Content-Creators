@@ -46,7 +46,7 @@ export default function FeaturesSection() {
                         viewport={{ once: true }}
                         transition={{ type: "spring", stiffness: 240, damping: 70, mass: 1 }}
                     >
-                        <img className="h-full w-auto" src="/assets/features-showcase-1.png" alt="features showcase" width={1000} height={500} />
+                        <img className="h-full w-auto" src="/assets/features-showcase.png" alt="features showcase" width={400} height={200} />
                     </motion.div>
                     <motion.div className="md:col-span-1"
                         initial={{ y: 150, opacity: 0 }}
@@ -57,7 +57,7 @@ export default function FeaturesSection() {
                         <img src="/assets/features-showcase-2.png" alt="features showcase" width={1000} height={500} className="hover:-translate-y-0.5 transition duration-300" />
                         <h3 className="text-[24px]/7.5 text-slate-300 font-medium mt-6">Better design with highest revenue and profits </h3>
                         <p className="text-slate-300 mt-2">PrebuiltUI empowers you to build beautifully and scale effortlessly.</p>
-                        <a href="https://prebuiltui.com" className="group flex items-center gap-2 mt-4 text-pink-600 hover:text-pink-700 transition">
+                        <a href="/about" className="group flex items-center gap-2 mt-4 text-pink-600 hover:text-pink-700 transition">
                             Learn more about the product
                             <ArrowUpRight className="size-5 group-hover:translate-x-0.5 transition duration-300" />
                         </a>

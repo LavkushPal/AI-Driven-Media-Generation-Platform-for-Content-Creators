@@ -13,7 +13,7 @@ await connectDB();
 //............middlewares.................
 
 app.use(cors({
-    origin: ['http://localhost:4000','http://localhost:5173','https://media-generation.vercel.app','https://media-gen-ai.vercel.app'],
+    origin: ['http://localhost:4000','http://localhost:5173'],
     credentials:true
 }));
 
@@ -48,7 +48,7 @@ app.use('/api/thumbnail',thumbnail_router);  //thumbnail apis
 
 
 app.get('/',(req,resp)=>{
-    resp.send("server is running")
+    resp.send(`<h1> Server is live </h1>`)
 })
 
 const port=process.env.PORT || 3000;
