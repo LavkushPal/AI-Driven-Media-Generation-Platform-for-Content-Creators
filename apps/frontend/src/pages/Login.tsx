@@ -42,6 +42,10 @@ export default function Login() {
     return (
         <>
             <SoftBackdrop/>
+            <div className="min-h-screen pt-20 flex items-center justify-center px-4">
+      <div className="w-full max-w-md rounded-3xl bg-white/5 p-8 ring-1 ring-white/10">
+        {/* form */}
+     
             <form
                 onSubmit={handleSubmit}
                 className="w-full sm:w-87.5 text-center bg-white/6 border border-white/10 rounded-2xl px-8">
@@ -83,6 +87,9 @@ export default function Login() {
                     <span className="text-indigo-400 hover:underline ml-1">click here</span>
                 </p>
             </form>
+
+             </div>
+    </div>
 
         </>
     )

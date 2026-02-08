@@ -83,7 +83,6 @@ export default function Navbar() {
                     isLoggedIn?  <button  onClick={() => {setIsOpen(false);logout()}} > Logout </button>
                      : <Link to={"/login"} onClick={() => setIsOpen(false)} > Login </Link>
                 }
-                
 
                 <button onClick={() => setIsOpen(false)} className="active:ring-3 active:ring-white aspect-square size-10 p-1 items-center justify-center bg-pink-600 hover:bg-pink-700 transition text-white rounded-md flex">
                     <XIcon />

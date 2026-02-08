@@ -17,23 +17,33 @@ app.use(cors({
     credentials:true
 }));
 
+app.set("trust proxy", 1);
+
+const isProd = process.env.NODE_ENV === "production";
+
 app.use(session({
-    secret : process.env.SESSION_KEY,
+    secret: process.env.SESSION_KEY,
     resave: false,
     saveUninitialized: false,
-    cookie: {
-        maxAge: 1000*60*60*24 ,//24 hr
-        httpOnly: true,
-        // secure:false,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'none',
-        path: '/',
-    },
     store: MongoStore.create({
-        mongoUrl:process.env.MONGO_URL,
-        collectionName: 'session'
-    })
+        mongoUrl: process.env.MONGO_URL,
+        collectionName: "session",
+    }),
+    cookie: {
+        maxAge: 1000 * 60 * 60 * 24,
+        httpOnly: true,
+        secure: isProd,                 // true in prod (HTTPS)
+        sameSite: isProd ? "none" : "lax",
+    },
 }));
+
+
+app.get("/api/auth/me", (req, res) => {
+  res.json({
+    hasSession: !!req.session,
+    session: req.session,
+  });
+});
 
 app.use(express.json());
 
@@ -46,6 +56,14 @@ app.use('/api/auth',auth_router); //authentication apis
 
 app.use('/api/thumbnail',thumbnail_router);  //thumbnail apis
 // server --> routes --> controllers --> models
+
+
+app.get("/api/auth/me", (req, res) => {
+  res.json({
+    hasSession: !!req.session,
+    session: req.session,
+  });
+});
 
 
 app.get('/',(req,resp)=>{

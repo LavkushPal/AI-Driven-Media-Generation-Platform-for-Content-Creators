@@ -47,6 +47,7 @@ export default function Generate() {
   const [additionalPrompts, setAdditionalPrompts] = useState("");
   const [photoUrl, setPhotoUrl] = useState<string | null>(null);
   const [isLoading,setIsLoading] = useState(false)
+  const [isGenerated,setIsGenerated]=useState(false)
 
   const {isLoggedIn} = useAuthContext()
   const navigate= useNavigate()
@@ -100,6 +101,7 @@ export default function Generate() {
 
           URL.revokeObjectURL(blobUrl);
           toast.success("Downloaded successfully");
+          setIsGenerated(false);
         } catch (err) {
           console.error(err);
           toast.error("Download failed (CORS restriction)");
@@ -123,6 +125,7 @@ export default function Generate() {
     try {
       setIsLoading(true);
       const { data } = await api.post('/api/thumbnail/generate', payload);
+      setIsGenerated(true);
       setPhotoUrl(data?.thumbnail?.imageUrl ?? null);
       toast.success(data?.message ?? "Generated");
     }catch (e) {
@@ -132,6 +135,7 @@ export default function Generate() {
       toast.error(e.message)
     } finally {
       setIsLoading(false);
+      
     }
 
     // eslint-disable-next-line no-console
@@ -397,7 +401,7 @@ export default function Generate() {
             className="mt-6 w-full rounded-2xl bg-gradient-to-r from-fuchsia-500 to-pink-500 px-5 py-4 text-sm font-semibold text-white shadow-lg shadow-fuchsia-500/20 hover:opacity-95 active:opacity-90"
           >
 
-          {isLoading?" Generating" : "Generate Thumbnail" }
+          {isLoading?"Generating..." : "Generate Thumbnail" }
 
           </button>
         </section>
@@ -435,7 +439,7 @@ export default function Generate() {
 
 
 
-              <div className="relative z-10 flex h-full w-full flex-col items-center justify-center px-6 text-center">
+             {isGenerated ? <div></div> : <div className="relative z-10 flex h-full w-full flex-col items-center justify-center px-6 text-center">
                 <div className="grid h-16 w-16 place-items-center rounded-full bg-white/10 ring-1 ring-white/15">
                   <span className="text-2xl"></span>
                 </div>
@@ -458,15 +462,16 @@ export default function Generate() {
                   </span>
                 </div>
               </div>
+              } 
             
             </div>
 
 
 
             {/* Small helper line under preview */}
-            <div className="mt-3 text-xs text-white/45">
+            {/* <div className="mt-3 text-xs text-white/45">
               Here is your mindo blowing thumbnail, download to use it 
-            </div>
+            </div> */}
 
             <button
                 type="button"
