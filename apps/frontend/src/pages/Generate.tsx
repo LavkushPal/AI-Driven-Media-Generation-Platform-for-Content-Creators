@@ -120,23 +120,22 @@ export default function Generate() {
       description: ""
     };
 
-    setIsLoading(true);
-
-    const response = await api.post('/api/thumbnail/generate',payload);
-
-    if(response.data.thumbnail){
-      // navigate('/generate'+response.data.thumbnail._id);
-
-      setPhotoUrl(response.data.thumbnail.imageUrl);
-
-      toast.success(response.data.message)
-
+    try {
+      setIsLoading(true);
+      const { data } = await api.post('/api/thumbnail/generate', payload);
+      setPhotoUrl(data?.thumbnail?.imageUrl ?? null);
+      toast.success(data?.message ?? "Generated");
+    }catch (e) {
+      console.error(e);
+      // toast.error(e.message)
+      // toast.error("failed");
+      toast.error(e.message)
+    } finally {
       setIsLoading(false);
-
     }
 
     // eslint-disable-next-line no-console
-    console.log("Generate thumbnail payload:", payload);
+    // console.log("Generate thumbnail payload:", payload);
   }
 
   return (
@@ -389,6 +388,8 @@ export default function Generate() {
           </div>
 
           {/* Generate button */}
+
+          
           <button
             type="button"
             onClick={onGenerate}

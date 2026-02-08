@@ -46,16 +46,24 @@ export const generate_thumbs=async (req,resp)=>{
 
         //..............LLM Call........................................
 
-        // const response = await gemini_ai.models.generateContent({
-        //     model:gemini_model,
-        //     contents:[prompt],
-        //     config:generateConfig
-        // })
+        const response = await gemini_ai.models.generateContent({
+            model:gemini_model,
+            contents:[prompt],
+            config:generateConfig
+        })
+
+        // const response = gemini_ai.models.generateImages({
+        //     model: 'imagen-4.0-generate-001',
+        //     prompt: 'Robot holding a red skateboard',
+        //     config: {
+        //         numberOfImages: 1,
+        //         includeRaiReason: true,
+        //     }
+        // });
 
 
-
-        //..........dummy image to test other function while api does not work
-        const response = getDummyGeminiImageResponse();
+        // //..........dummy image to test other function while api does not work
+        // const response = getDummyGeminiImageResponse();
 
         console.log("upto llm call ok")
 
