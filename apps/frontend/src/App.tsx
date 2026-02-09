@@ -1,4 +1,4 @@
-import { Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import Navbar from "./components/Navbar";
 // import Footer from "./components/Footer";
@@ -25,7 +25,11 @@ export default function App() {
                 <Route path="/contact" element={<ContactSection />} />
                 {/* <Route path="/preview" element={<Generate />} /> */}
                 <Route path="/login" element={<Login />} />
+
+                {/* Redirect all unknown routes */}
+                <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
+
             {/* <Footer /> */}
         </>
     );
