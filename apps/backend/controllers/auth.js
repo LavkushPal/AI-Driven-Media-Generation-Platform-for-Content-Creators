@@ -90,6 +90,8 @@ export const login_user= async(req,resp)=>{
 //............user logout............
 
 export const logout_user= async(req,resp)=>{
+    if(!req.session || !req.session.isLoggedIn) return resp.json({"message":"user is not logged in"})
+
     req.session.destroy((error)=>{
         if(error){
             console.log(error.message)

@@ -23,43 +23,58 @@ export const generate_thumbs=async (req,resp)=>{
         console.log("upto db call ok")
 
         // image generation work...............................................
-        const gemini_model='gemini-3-pro-image-preview';
+        // const gemini_model='gemini-3-pro-image-preview';
 
-        const generateConfig={
-            maxOutputTokens:32768,
-            temperature:1,
-            topP:0.95,
-            responseModalities:['IMAGE'],
-            imageConfig:{
-                aspectRatio:aspectRatio || "16:9",
-                imageSize:'1K'
-            }
-        }
+        // const generateConfig={
+        //     maxOutputTokens:32768,
+        //     temperature:1,
+        //     topP:0.95,
+        //     responseModalities:['IMAGE'],
+        //     imageConfig:{
+        //         aspectRatio:aspectRatio || "16:9",
+        //         imageSize:'1K'
+        //     }
+        // }
 
-        let prompt= `create a ${style} thumbnail for ${title}`;
+        // let prompt= `create a ${style} thumbnail for ${title}`;
 
-        if(colorScheme) prompt+=` use a ${colorScheme} as color scheme`;
-        if(userPrompt) prompt+=` additional details: ${userPrompt}`;
-        prompt+=` .The thumbnail should be ${aspectRatio} , visually stunnning, and designed
-        to maximize click through rate. Make it bold, proffessional,
-        and impossible to ignore. `;
+        // if(colorScheme) prompt+=` use a ${colorScheme} as color scheme`;
+        // if(userPrompt) prompt+=` additional details: ${userPrompt}`;
+        // prompt+=` .The thumbnail should be ${aspectRatio} , visually stunnning, and designed
+        // to maximize click through rate. Make it bold, proffessional,
+        // and impossible to ignore. `;
+
+        let prompt=`Create a YouTube thumbnail.
+                    Style: ${style}
+                    Aspect ratio: ${aspectRatio}
+                    Color scheme: ${colorScheme}
+                    Main subject: ${title}
+                    textOverlay: ${textOverlay}
+                    Rules:
+                    - One clear focal subject
+                    - High contrast
+                    - Minimal background clutter
+                    - No text unless textOverlay is provided
+                    If textOverlay provided: place large bold text at top-left, readable.
+        `;
 
         //..............LLM Call........................................
 
-        const response = await gemini_ai.models.generateContent({
-            model:gemini_model,
-            contents:[prompt],
-            config:generateConfig
-        })
+        // const response = await gemini_ai.models.generateContent({
+        //     model:gemini_model,
+        //     contents:[prompt],
+        //     config:generateConfig
+        // })
 
-        // const response = gemini_ai.models.generateImages({
-        //     model: 'imagen-4.0-generate-001',
-        //     prompt: 'Robot holding a red skateboard',
-        //     config: {
-        //         numberOfImages: 1,
-        //         includeRaiReason: true,
-        //     }
-        // });
+        const response =await gemini_ai.models.generateImages({
+            model: 'imagen-4.0-generate-001',
+            prompt: prompt,
+            config: {
+                numberOfImages: 1,
+                includeRaiReason: true,
+            },
+
+        });
 
 
         // //..........dummy image to test other function while api does not work
@@ -69,19 +84,19 @@ export const generate_thumbs=async (req,resp)=>{
 
 
         // Check if the response is valid
-        if (!response?.candidates?.[0]?.content?.parts) {
+        if (!response?.generatedImages?.[0]?.image?.imageBytes) {
             throw new Error("Unexpected response");
         }
 
-        const parts = response.candidates[0].content.parts;
+        const imgB64 = response?.generatedImages?.[0]?.image?.imageBytes;
 
-        let finalBuffer = null;
+        const finalBuffer = Buffer.from(imgB64, "base64");
 
-        for (const part of parts) {
-            if (part.inlineData) {
-                finalBuffer = Buffer.from(part.inlineData.data, "base64");
-            }
-        }
+        // for (const part of parts) {
+        //     if (part.inlineData) {
+        //         finalBuffer = Buffer.from(part.inlineData.data, "base64");
+        //     }
+        // }
 
         const filename = `final-output-${Date.now()}.png`;
         const filePath = path.join("images", filename);

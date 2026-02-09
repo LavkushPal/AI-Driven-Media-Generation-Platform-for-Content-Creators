@@ -2,7 +2,7 @@ import { RateLimiterMemory } from "rate-limiter-flexible";
 
 // Example: max 5 thumbnails per day per user
 const limiter = new RateLimiterMemory({
-  points: 5,     // allowed requests
+  points: 10,     // allowed requests
   duration: 60 * 60 *24, // per 1 hour
 });
 
