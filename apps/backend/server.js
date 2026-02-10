@@ -19,23 +19,21 @@ app.use(cors({
 
 app.set("trust proxy", 1);
 
-const isProd = process.env.NODE_ENV === "production";
-
 app.use(session({
     secret: process.env.SESSION_KEY,
     resave: false,
     saveUninitialized: false,
-    store: MongoStore.create({
-        mongoUrl: process.env.MONGO_URL,
-        collectionName: "session",
-    }),
     cookie: {
         maxAge: 1000 * 60 * 60 * 24,
         httpOnly: true,
-        secure: false,                 // true in prod (HTTPS)
-        // sameSite: isProd ? "none" : "lax",
-        sameSite: "none",
-    }
+        secure: process.env.NODE_ENV === "production",                 // true in prod (HTTPS)
+        sameSite: process.env.NODE_ENV === "production"? "none" : "lax",
+        path:'/'
+    },
+    store: MongoStore.create({
+        mongoUrl: process.env.MONGO_URL,
+        collectionName: "sessions"
+    })
 }));
 
 
