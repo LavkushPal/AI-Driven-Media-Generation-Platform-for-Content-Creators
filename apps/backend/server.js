@@ -34,7 +34,7 @@ app.use(session({
         httpOnly: true,
         secure: false,                 // true in prod (HTTPS)
         // sameSite: isProd ? "none" : "lax",
-        sameSite: "lax",
+        sameSite: "none",
     }
 }));
 
