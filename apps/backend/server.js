@@ -19,10 +19,10 @@ app.use(cors({
 }));
 
 
-app.options("*", cors({
-  origin: ["https://media-gen-ai.vercel.app"],
-  credentials: true,
-}));
+// app.options("*", cors({
+//   origin: ["https://media-gen-ai.vercel.app"],
+//   credentials: true,
+// }));
 
 app.use(session({
   proxy: true,
