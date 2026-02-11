@@ -89,38 +89,41 @@ export const login_user= async(req,resp)=>{
 
 //............user logout............
 
-export const logout_user= async(req,resp)=>{
-    if(!req.session || !req.session.isLoggedIn) return resp.json({"message":"user is not logged in"})
+export const logout_user = (req, res) => {
+  req.session.destroy((err) => {
+    if (err) {
+      console.log(err.message);
+      return res.status(500).json({ message: err.message });
+    }
 
-    req.session.destroy((error)=>{
-        if(error){
-            console.log(error.message)
-            return resp.status(500).json({message:error.message})
-        }
-    })
+    // important for cross-site cookies (frontend+backend different domains)
+    res.clearCookie("connect.sid", {
+      path: "/",
+      sameSite: "none",
+      secure: true,
+    });
 
-    return resp.json({
-        message:"logged out successfully"
-    })
-}
+    return res.json({ message: "logged out successfully" });
+  });
+};
+
 
 //............ verify user ............
 
-export const verify_user= async(req,resp)=>{
-    try {
-        const userid=req.session.userId;
-        const user= await User.findById(userid).select('-password');
+export const verify_user = async (req, res) => {
+  try {
+    const userid = req.session?.userId;
+    if (!userid) return res.status(401).json({ message: "not logged in" });
 
-        if(!user) return resp.status(500).json({message:'invalid user'})
+    const user = await User.findById(userid).select("-password");
+    if (!user) return res.status(401).json({ message: "invalid user" });
 
-        return resp.json({user});
-        
-    } catch (error) {
-        console.log(error.message)
-        return resp.status(500).json({
-            message:error.message
-        })
-    }
-}
+    return res.json({ user });
+  } catch (error) {
+    console.log(error.message);
+    return res.status(500).json({ message: error.message });
+  }
+};
+
 
 

@@ -11,30 +11,37 @@ const app=express();
 await connectDB();
 
 //............middlewares.................
+app.set("trust proxy", 1);
 
 app.use(cors({
-    origin: ['http://localhost:4000','http://localhost:5173','https://media-gen-ai-server.vercel.app','https://media-gen-ai.vercel.app'],
+    origin: ['https://media-gen-ai.vercel.app'],
     credentials:true
 }));
 
-app.set("trust proxy", 1);
+
+app.options("*", cors({
+  origin: ["https://media-gen-ai.vercel.app"],
+  credentials: true,
+}));
 
 app.use(session({
-    secret: process.env.SESSION_KEY,
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-        maxAge: 1000 * 60 * 60 * 24,
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",                 // true in prod (HTTPS)
-        sameSite: process.env.NODE_ENV === "production"? "none" : "lax",
-        path:'/'
-    },
-    store: MongoStore.create({
-        mongoUrl: process.env.MONGO_URL,
-        collectionName: "sessions"
-    })
+  proxy: true,
+  secret: process.env.SESSION_KEY,
+  resave: false,
+  saveUninitialized: false,
+  store: MongoStore.create({
+    mongoUrl: process.env.MONGO_URL,
+    collectionName: "sessions"
+  }),
+  cookie: {
+    maxAge: 1000 * 60 * 60 * 24,
+    httpOnly: true,
+    secure: true,
+    sameSite: "none",
+    path: "/"
+  }
 }));
+
 
 
 app.get("/api/auth/me", (req, res) => {

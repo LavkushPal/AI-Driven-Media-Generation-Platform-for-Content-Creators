@@ -1,15 +1,8 @@
-
-const protect=async (req,resp,next)=>{
-
-    const {isLoggedIn,userId}=req.session;
-
-    if(!isLoggedIn || !userId){
-        return resp.status(401).json({message:"usser is not logged in"})
-    }
-
-    next();
-}
+const protect = (req, res, next) => {
+  if (!req.session?.isLoggedIn || !req.session?.userId) {
+    return res.status(401).json({ message: "user is not logged in" });
+  }
+  next();
+};
 
 export default protect;
-
-
