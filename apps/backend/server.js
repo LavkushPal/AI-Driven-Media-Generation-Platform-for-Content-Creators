@@ -66,8 +66,12 @@ app.get("/api/auth/me", (req, res) => {
 
 
 app.get('/',(req,resp)=>{
-    resp.send(`<h1> Server is live </h1>`)
+    resp.send(`<h1> Server is live on vercel </h1>`)
 })
 
-const port=process.env.PORT || 3000;
-app.listen(port,()=>console.log("server is running on :"+port));
+// const port=process.env.PORT || 3000;
+// app.listen(port,()=>console.log("server is running on :"+port));
+
+
+//for vercel deployement
+export default app;

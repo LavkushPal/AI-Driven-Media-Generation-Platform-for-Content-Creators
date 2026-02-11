@@ -1,5 +1,11 @@
 {
   "type": "module",
+
+  "scripts": {
+    "dev": "nodemon server.js",
+    "start": "node server.js"
+  },
+
   "dependencies": {
     "@google/genai": "^1.39.0",
     "bcrypt": "^6.0.0",
@@ -13,6 +19,7 @@
     "nodemon": "^3.1.11",
     "rate-limiter-flexible": "^9.1.1"
   },
+
   "devDependencies": {
     "@types/bcrypt": "^6.0.0",
     "@types/express-session": "^1.18.2"
