@@ -6,7 +6,7 @@ const auth_router=express.Router();
 
 auth_router.post('/register',register_user);
 auth_router.post('/login',login_user);
-auth_router.post('/logout',protect,logout_user);
+auth_router.post('/logout',logout_user);
 
 auth_router.get('/verify',protect,verify_user);
 
