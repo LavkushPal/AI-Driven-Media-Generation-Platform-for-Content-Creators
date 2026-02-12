@@ -11,7 +11,7 @@ const app=express();
 await connectDB();
 
 //............middlewares.................
-app.set("trust proxy", 1);
+
 
 app.use(cors({
     origin: ['http://localhost:5173',"https://media-theta-five.vercel.app"],
@@ -24,6 +24,8 @@ app.use(cors({
 //   credentials: true,
 // }));
 
+app.set("trust proxy", 1);
+
 app.use(session({
   secret: process.env.SESSION_KEY,
   resave: false,
@@ -32,7 +34,7 @@ app.use(session({
     maxAge: 1000 * 60 * 60 * 24,
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
-    sameSite: 'node',
+    sameSite: process.env.NODE_ENV === 'production' ? 'node' : 'lax',
     path: "/"
   },
   store: MongoStore.create({
