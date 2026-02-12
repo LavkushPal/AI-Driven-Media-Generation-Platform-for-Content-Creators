@@ -1,8 +1,9 @@
 import React, { useMemo, useRef, useState } from "react";
 
-import {useAuthContext} from '../context/AuthContext.jsx'
+// @ts-ignore: no declaration file for AuthContext.jsx
+import { useAuthContext } from '../context/AuthContext.jsx';
 import toast from "react-hot-toast";
-import api from '../config/api.jsx'
+import api from '../config/api.jsx';
 import { useNavigate } from "react-router-dom";
 
 type AspectRatio = "16:9" | "1:1" | "9:16";
@@ -132,7 +133,7 @@ export default function Generate() {
       console.error(e);
       // toast.error(e.message)
       // toast.error("failed");
-      toast.error(e.message)
+      toast.error("failed")
     } finally {
       setIsLoading(false);
       

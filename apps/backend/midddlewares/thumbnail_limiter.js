@@ -10,7 +10,7 @@ export default async function thumbnailRateLimit(req, res, next) {
   try {
     const userId = req.session?.userId;
 
-    if (!userId) {
+    if(!userId) {
       return res.status(401).json({ message: "Please login first" });
     }
 
