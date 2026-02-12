@@ -14,18 +14,18 @@ await connectDB();
 app.set("trust proxy", 1);
 
 app.use(cors({
-    origin: ['https://media-gen-ai.vercel.app'],
+    origin: ['http://localhost:5173'],
     credentials:true
 }));
 
 
-app.options("*", cors({
-  origin: ["https://media-gen-ai.vercel.app"],
-  credentials: true,
-}));
+// app.options("*", cors({
+//   origin: ["https://media-gen-ai.vercel.app"],
+//   credentials: true,
+// }));
 
 app.use(session({
-  proxy: true,
+  proxy: false,
   secret: process.env.SESSION_KEY,
   resave: false,
   saveUninitialized: false,
@@ -36,8 +36,8 @@ app.use(session({
   cookie: {
     maxAge: 1000 * 60 * 60 * 24,
     httpOnly: true,
-    secure: true,
-    sameSite: "none",
+    secure: false,
+    sameSite: "lax",
     path: "/"
   }
 }));
@@ -76,9 +76,9 @@ app.get('/',(req,resp)=>{
     resp.send(`<h1> Server is live on vercel </h1>`)
 })
 
-// const port=process.env.PORT || 3000;
-// app.listen(port,()=>console.log("server is running on :"+port));
+const port=process.env.PORT || 3000;
+app.listen(port,()=>console.log("server is running on :"+port));
 
 
 //for vercel deployement
-export default app;
+// export default app;
