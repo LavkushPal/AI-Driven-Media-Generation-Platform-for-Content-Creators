@@ -14,7 +14,7 @@ await connectDB();
 app.set("trust proxy", 1);
 
 app.use(cors({
-    origin: ['http://localhost:5173'],
+    origin: ['http://localhost:5173',"https://media-theta-five.vercel.app"],
     credentials:true
 }));
 
@@ -25,21 +25,20 @@ app.use(cors({
 // }));
 
 app.use(session({
-  proxy: false,
   secret: process.env.SESSION_KEY,
   resave: false,
   saveUninitialized: false,
-  store: MongoStore.create({
-    mongoUrl: process.env.MONGO_URL,
-    collectionName: "sessions"
-  }),
   cookie: {
     maxAge: 1000 * 60 * 60 * 24,
     httpOnly: true,
-    secure: false,
-    sameSite: "lax",
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'node',
     path: "/"
-  }
+  },
+  store: MongoStore.create({
+    mongoUrl: process.env.MONGO_URL,
+    collectionName: "sessions"
+  })
 }));
 
 
@@ -77,7 +76,7 @@ app.get('/',(req,resp)=>{
 })
 
 const port=process.env.PORT || 3000;
-app.listen(port,()=>console.log("server is running on :"+port));
+app.listen(port,()=>console.log("server is running on :"+ port));
 
 
 //for vercel deployement
